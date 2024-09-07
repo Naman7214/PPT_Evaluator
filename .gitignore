@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.py[cod]
+static/uploads/
+*.log
+.vscode/
+.idea/
+.DS_Store

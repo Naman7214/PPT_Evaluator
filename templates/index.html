@@ -47,10 +47,28 @@
             border-radius: 5px;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            margin: 0.5rem;
         }
 
         .btn:hover {
             background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
         }
     </style>
 </head>
@@ -58,7 +76,8 @@
     <div class="container">
         <h1>SIH Hackathon PPT Judging</h1>
         <p>Submit your PPTs for evaluation here.</p>
-        <a href="/upload_pdf" class="btn btn-primary">Submit PPT</a>
+        <a href="/upload_pdf" class="btn">Submit PPT</a>
+        <a href="/view_results" class="btn">View Results</a>
     </div>
 </body>
 </html>
