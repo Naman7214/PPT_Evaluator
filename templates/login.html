@@ -1,101 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to right, #4facfe, #00f2fe);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 400px;
-            width: 100%;
-            background: #fff;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            border: 1px solid #ddd;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #555;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            box-sizing: border-box;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        .form-group input:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        .alert {
-            color: #d9534f;
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            border-radius: 4px;
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="../static/Styles/style.css">
 </head>
+
 <body>
-    <div class="container">
-        <h1>Login</h1>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="alert">{{ messages[0] }}</div>
-            {% endif %}
-        {% endwith %}
-        <form method="post">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+    <!-- partial:index.partial.html -->
+
+        <div class="nav">
+            <div class="left">
+              <div class="leftlogo">
+                <img src="../static/images/MMCOE LOGO.png" alt="mmcoe" height="80px">
+              </div>
+              <div>
+                <div class="ltop"><strong>Marathwada Mitra Mandal's College of Engineering</strong></div>
+                <div class="lmiddle">An Autonomous Institute</div>
+                <div class="lbottom">Accrediated with "A++" Grade by NAAC </div>
+              </div>
             </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+            <div class="right">
+              <div>
+                <div class="rtop"><strong>Internal Smart India Hackathon 2024</strong></div>
+                <div class="rmiddle">Organized by ACM Student Chapter</div>
+              </div>
+              <div class="rightlogo">
+                <img src="../static/images/SIH-Logo3.png" alt="sih" height="80px">
+              </div>
             </div>
-            <button type="submit" class="btn">Login</button>
-        </form>
+          </div>
+          
+
+    <div class="scroll-down">SCROLL DOWN
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+            <path
+                d="M16 3C8.832031 3 3 8.832031 3 16s5.832031 13 13 13 13-5.832031 13-13S23.167969 3 16 3zm0 2c6.085938 0 11 4.914063 11 11 0 6.085938-4.914062 11-11 11-6.085937 0-11-4.914062-11-11C5 9.914063 9.914063 5 16 5zm-1 4v10.28125l-4-4-1.40625 1.4375L16 23.125l6.40625-6.40625L21 15.28125l-4 4V9z" />
+        </svg>
     </div>
+    <div class="container"></div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="alert">{{ messages[0] }}</div>
+        {% endif %}
+        {% endwith %}
+    <form class="modal" method="post">
+        <div class="modal-container">
+            <div class="modal-left">
+                <h1 class="modal-title">Welcome!</h1>
+                <p class="modal-desc">Admin Login for SIH PPT Evaluation</p>
+                <div class="input-block">
+                    <label for="username" class="input-label">Username</label>
+                    <input type="text" name="username" id="username" placeholder="Username" required>
+                </div>
+                <div class="input-block">
+                    <label for="password" class="input-label">Password</label>
+                    <input type="password" name="password" id="password" placeholder="Password" required>
+                </div>
+                <div class="modal-buttons">
+                    <button class="input-button">Login</button>
+                </div>
+            </div>
+            <div class="modal-right">
+                <img src="https://img.freepik.com/free-vector/pair-programming-concept-illustration_114360-2170.jpg?w=740&t=st=1725779426~exp=1725780026~hmac=cd4a6f553694114e9b369e2cd6bb09b25724a2761f59dd0b1b76f118d824bd7d"
+                    alt="">
+            </div>
+            <button class="icon-button close-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+                    <path
+                        d="M 25 3 C 12.86158 3 3 12.86158 3 25 C 3 37.13842 12.86158 47 25 47 C 37.13842 47 47 37.13842 47 25 C 47 12.86158 37.13842 3 25 3 z M 25 5 C 36.05754 5 45 13.94246 45 25 C 45 36.05754 36.05754 45 25 45 C 13.94246 45 5 36.05754 5 25 C 5 13.94246 13.94246 5 25 5 z M 16.990234 15.990234 A 1.0001 1.0001 0 0 0 16.292969 17.707031 L 23.585938 25 L 16.292969 32.292969 A 1.0001 1.0001 0 1 0 17.707031 33.707031 L 25 26.414062 L 32.292969 33.707031 A 1.0001 1.0001 0 1 0 33.707031 32.292969 L 26.414062 25 L 33.707031 17.707031 A 1.0001 1.0001 0 0 0 32.980469 15.990234 A 1.0001 1.0001 0 0 0 32.292969 16.292969 L 25 23.585938 L 17.707031 16.292969 A 1.0001 1.0001 0 0 0 16.990234 15.990234 z">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <button type="submit" class="modal-button">Click here to login</button>
+    </form>
+    <!-- partial -->
+    <script src="../static/Javascript/script.js"></script>
+
 </body>
+
 </html>

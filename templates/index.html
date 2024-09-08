@@ -1,83 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIH Hackathon PPT Judging</title>
     <style>
+        /* General Styles */
+        @import url("https://fonts.googleapis.com/css?family=Nunito:400,600,700");
+
         body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
+            background-color: rgb(158, 169, 173);
+            /* Background color to blend with the image */
+            font-family: "Nunito", sans-serif;
+            color: #ffffff;
+            /* Light text for contrast */
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
+            background: url('../static/images/bg2.png') no-repeat center center;
+            /* Center the background image */
+            background-size: cover;
+            /* Ensure the image covers the entire background */
         }
 
+
+        /* Container Styles */
         .container {
-            background-color: white;
-            padding: 50px;
-            border-radius: 15px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
             max-width: 600px;
-            width: 100%;
+            width: 90%;
         }
 
+        /* Header Styles */
         h1 {
-            font-size: 3rem;
-            color: #343a40;
+            font-size: 2.5rem;
+            color: rgba(0, 0, 0, 0.85);
+            /* Yellow for highlighting */
             margin-bottom: 20px;
         }
 
+        /* Paragraph Styles */
         p {
             font-size: 1.2rem;
-            color: #6c757d;
+            color: rgba(0, 0, 0, 0.85);
+            /* Light grey text */
             margin-bottom: 30px;
         }
 
+        /* Button Styles */
         .btn {
             display: inline-block;
-            font-size: 1.25rem;
-            padding: 0.75rem 2rem;
-            color: #fff;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
+            font-size: 1.1rem;
+            padding: 12px 24px;
+            color: rgba(0, 0, 0, 0.85);
+            /* Dark text for contrast */
+            /* background-color: ; Yellow background */
+            border: 1px solid black;
+            border-radius: 8px;
             text-decoration: none;
             transition: background-color 0.3s ease;
             margin: 0.5rem;
         }
 
         .btn:hover {
-            background-color: #0056b3;
+            background-color: rgba(0, 0, 0, 0.85);
+            /* Slightly darker yellow on hover */
+            color: #fff;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .nav {
+            position: fixed;
+            /* Keep nav at the top */
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            /* Align left and right containers side by side */
+            justify-content: space-between;
+            /* Space between left and right sections */
+            background-color: #f8f9fa;
+            /* Background color for nav */
+            padding: 10px 20px;
+            /* Padding for spacing */
+            z-index: 1000;
+            /* Make sure it's above other content */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Optional shadow for effect */
+            color: rgba(0, 0, 0, 0.85);
         }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+        .left,
+        .right {
+            display: flex;
+            /* Use flexbox for alignment */
+            align-items: center;
+            /* Center content vertically */
+        }
+
+        .left .leftlogo,
+        .right .rightlogo {
+            margin-right: 10px;
+            /* Add some space between logo and text */
+        }
+
+        .leftlogo img,
+        .rightlogo img {
+            height: 40px;
+            /* Set a specific height for logos */
+        }
+
+        .left .leftlogo {
+            margin-right: 10px;
+            /* Add space between logo and text */
+        }
+
+        .right .rightlogo {
+            margin-left: 10px;
+            /* Add space between logo and text */
+        }
+
+        .ltop,
+        .lmiddle,
+        .lbottom,
+        .rtop,
+        .rmiddle {
             text-align: left;
+            /* Align text to the left */
+
         }
 
-        th {
-            background-color: #007bff;
-            color: white;
+        .left .ltop,
+        .left .lmiddle,
+        .left .lbottom {
+            margin: 0;
+            /* Reset margins for text */
+        }
+
+        .right .rtop,
+        .right .rmiddle {
+            margin: 0;
+            /* Reset margins for text */
+        }
+
+        .leftlogo img,
+        .rightlogo img {
+            height: 80px !important;
+            /* Ensure the height is applied */
+        }
+
+        hr {
+            border: 1px solid #000
         }
     </style>
 </head>
+
 <body>
+    <div class="nav">
+        <div class="left">
+            <div class="leftlogo">
+                <img src="../static/images/MMCOE LOGO.png" alt="mmcoe" height="80px">
+            </div>
+            <div>
+                <div class="ltop"><strong>Marathwada Mitra Mandal's College of Engineering</strong></div>
+                <div class="lmiddle">An Autonomous Institute</div>
+                <div class="lbottom">Accrediated with "A++" Grade by NAAC </div>
+            </div>
+        </div>
+        <div class="right">
+            <div>
+                <div class="rtop"><strong>Internal Smart India Hackathon 2024</strong></div>
+                <div class="rmiddle">Organized by ACM Student Chapter</div>
+            </div>
+            <div class="rightlogo">
+                <img src="../static/images/SIH-Logo3.png" alt="sih" height="80px">
+            </div>
+        </div>
+    </div>
     <div class="container">
         <h1>SIH Hackathon PPT Judging</h1>
+        <hr>
         <p>Submit your PPTs for evaluation here.</p>
         <a href="/upload_pdf" class="btn">Submit PPT</a>
         <a href="/view_results" class="btn">View Results</a>
     </div>
 </body>
+
 </html>

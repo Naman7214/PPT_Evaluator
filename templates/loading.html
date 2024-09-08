@@ -13,36 +13,62 @@
             background-color: #f4f4f4;
             margin: 0;
             font-family: Arial, sans-serif;
+            flex-direction: column;
         }
-        .loading {
-            text-align: center;
-        }
-        .spinner {
-            border: 8px solid #f3f3f3; /* Light grey */
-            border-top: 8px solid #3498db; /* Blue */
+        
+        .loader {
+            height: 60px;
+            aspect-ratio: 1;
+            position: relative;
+          }
+          .loader::before,
+          .loader::after {
+            content: "";
+            position: absolute;
+            inset: 0;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+            transform-origin: bottom;
+          }
+          .loader::after {
+            background:
+              radial-gradient(at 75% 15%,#fffb,#0000 35%),
+              radial-gradient(at 80% 40%,#0000,#0008),
+              radial-gradient(circle  5px,#fff 94%,#0000),
+              radial-gradient(circle 10px,#000 94%,#0000),
+              linear-gradient(#F93318 0 0) top   /100% calc(50% - 5px),
+              linear-gradient(#fff    0 0) bottom/100% calc(50% - 5px)
+              #000;
+            background-repeat: no-repeat;
+            animation: l20 1s infinite cubic-bezier(0.5,120,0.5,-120);
+          }
+          .loader::before {
+            background:#ddd;
+            filter: blur(8px);
+            transform: scaleY(0.4) translate(-13px, 0px);
+          }
+          @keyframes l20 { 
+           30%,70% {transform:rotate(0deg)}
+           49.99%  {transform:rotate(0.2deg)}
+           50%     {transform:rotate(-0.2deg)}
+          }
         h1 {
             margin: 20px 0;
             color: #333;
+            text-align:center;
         }
         p {
             color: #666;
         }
+        hr{
+            border: 1px solid black;
+        }
     </style>
 </head>
 <body>
+    <div class="loader"></div>
     <div class="loading">
-        <div class="spinner"></div>
-        <h1>Evaluating your PPT...</h1>
+        <h1>Evaluating your Idea..</h1>
+        <hr>
         <p>Please wait while we evaluate the presentation. You will be redirected shortly.</p>
         <script>
             // Redirect after a short delay to ensure the background process completes

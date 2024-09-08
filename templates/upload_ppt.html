@@ -1,90 +1,212 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Upload PDF</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
+            background: linear-gradient(rgba(255, 255, 255, 0.6),
+                    rgba(255, 255, 255, 0.6)), url(../static/images/uploadbg.png) no-repeat center center;
+            background-size: cover;
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input[type="text"],
-        .form-group input[type="file"],
-        .form-group textarea {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        .form-group textarea {
+
+        /* Custom Navbar Styles */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: rgba(0, 0, 0, 0.85);
             height: 100px;
         }
-        .form-group input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 4px;
+
+        .left,
+        .right {
+            display: flex;
+            align-items: center;
         }
-        .form-group input[type="submit"]:hover {
-            background-color: #45a049;
+
+        .leftlogo,
+        .rightlogo {
+            margin-right: 10px;
+        }
+
+        .ltop,
+        .lmiddle,
+        .lbottom,
+        .rtop,
+        .rmiddle {
+            text-align: left;
+        }
+
+        .leftlogo img,
+        .rightlogo img {
+            height: 80px !important;
+        }
+
+        /* Drag and drop styles */
+        .file-drop-area {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .file-drop-area:hover {
+            border-color: #007bff;
+        }
+
+        .file-drop-area input[type="file"] {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav .right {
+                display: none;
+            }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Upload PDF</h1>
-        <form action="/upload_pdf" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="team_name">Team Name:</label>
-                <input type="text" id="team_name" name="team_name" required>
+
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <div class="nav">
+        <div class="left">
+            <div class="leftlogo">
+                <img src="../static/images/MMCOE LOGO.png" alt="mmcoe">
             </div>
-            <div class="form-group">
-                <label for="team_number">Team Number:</label>
-                <input type="text" id="team_number" name="team_number" required>
+            <div>
+                <div class="ltop text-lg font-bold">Marathwada Mitra Mandal's College of Engineering</div>
+                <div class="lmiddle text-sm">An Autonomous Institute</div>
+                <div class="lbottom text-sm">Accrediated with "A++" Grade by NAAC</div>
             </div>
-            <div class="form-group">
-                <label for="problem_statement_id">Problem Statement ID:</label>
-                <input type="text" id="problem_statement_id" name="problem_statement_id" required>
+        </div>
+        <div class="right">
+            <div>
+                <div class="rtop text-lg font-bold">Internal Smart India Hackathon 2024</div>
+                <div class="rmiddle text-sm">Organized by ACM Student Chapter</div>
             </div>
-            <div class="form-group">
-                <label for="problem_description">Problem Statement Description:</label>
-                <textarea id="problem_description" name="problem_description" required></textarea>
+            <div class="rightlogo">
+                <img src="../static/images/SIH-Logo3.png" alt="sih">
             </div>
-            <div class="form-group">
-                <label for="file">Upload PDF:</label>
-                <input type="file" id="file" name="file" accept=".pdf" required>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="mt-28 flex justify-center">
+        <form action="/upload_pdf" method="post" enctype="multipart/form-data"
+            class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 w-full max-w-lg">
+            <h2 class="text-2xl font-bold text-center mb-6">Submit Your Hackathon Entry</h2>
+
+            <!-- Team Name -->
+            <div class="mb-4">
+                <label for="team_name" class="block text-gray-700 text-sm font-bold mb-2">Team Name</label>
+                <input type="text" id="team_name" name="team_name"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Enter your team name" required>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Upload PDF">
+
+            <!-- Team Number -->
+            <div class="mb-4">
+                <label for="team_number" class="block text-gray-700 text-sm font-bold mb-2">Team Number</label>
+                <input type="text" id="team_number" name="team_number"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Enter your team number" required>
+            </div>
+
+            <!-- Problem Statement ID -->
+            <div class="mb-4">
+                <label for="problem_statement_id" class="block text-gray-700 text-sm font-bold mb-2">Problem Statement
+                    ID</label>
+                <input type="text" id="problem_statement_id" name="problem_statement_id"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Enter the problem statement ID" required>
+            </div>
+
+            <!-- Problem Statement Description -->
+            <div class="mb-4">
+                <label for="problem_description" class="block text-gray-700 text-sm font-bold mb-2">Problem Statement
+                    Description</label>
+                <textarea id="problem_description" name="problem_description" rows="3"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Describe the problem" required></textarea>
+            </div>
+
+            <!-- File Upload -->
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Upload PDF</label>
+                <div class="file-drop-area" id="file-drop-area">
+                    <span class="text-gray-500">Drag & drop a PDF here or click to select</span>
+                    <input type="file" id="file" name="file" accept=".pdf" required />
+                </div>
+                <p class="mt-2 text-sm text-gray-500" id="file-name"></p>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex items-center justify-between">
+                <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    type="submit">Submit</button>
             </div>
         </form>
     </div>
+
+    <script>
+        // Drag & Drop + File Select Handler
+        const fileDropArea = document.getElementById('file-drop-area');
+        const fileInput = document.getElementById('file');
+        const fileNameDisplay = document.getElementById('file-name');
+
+        fileDropArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileDropArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            fileDropArea.classList.add('border-blue-500');
+        });
+
+        fileDropArea.addEventListener('dragleave', () => {
+            fileDropArea.classList.remove('border-blue-500');
+        });
+
+        fileDropArea.addEventListener('drop', (event) => {
+            event.preventDefault();
+            fileDropArea.classList.remove('border-blue-500');
+            const file = event.dataTransfer.files[0];
+            handleFile(file);
+        });
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            handleFile(file);
+        });
+
+        function handleFile(file) {
+            if (file && file.type === 'application/pdf') {
+                fileNameDisplay.textContent = `Selected file: ${file.name}`;
+            } else {
+                fileNameDisplay.textContent = 'Please upload a valid PDF file.';
+            }
+        }
+    </script>
 </body>
+
 </html>

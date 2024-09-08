@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,7 +14,8 @@
         }
         .container {
             max-width: 800px;
-            margin: 0 auto;
+            /* margin: 0 50 auto auto; */
+            margin-top: 100px;
             background: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -27,6 +29,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            border-radius: 3px;
         }
         th, td {
             border: 1px solid #ddd;
@@ -37,12 +40,72 @@
             background-color: #007bff;
             color: white;
         }
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: rgba(0, 0, 0, 0.85);
+            height: 100px;
+        }
+
+        .left,
+        .right {
+            display: flex;
+            align-items: center;
+        }
+
+        .leftlogo,
+        .rightlogo {
+            margin-right: 10px;
+        }
+
+        .ltop,
+        .lmiddle,
+        .lbottom,
+        .rtop,
+        .rmiddle {
+            text-align: left;
+        }
+
+        .leftlogo img,
+        .rightlogo img {
+            height: 80px !important;
+        }
     </style>
 </head>
 <body>
+    <div class="nav">
+        <div class="left">
+            <div class="leftlogo">
+                <img src="../static/images/MMCOE LOGO.png" alt="mmcoe">
+            </div>
+            <div>
+                <div class="ltop text-lg font-bold">Marathwada Mitra Mandal's College of Engineering</div>
+                <div class="lmiddle text-sm">An Autonomous Institute</div>
+                <div class="lbottom text-sm">Accrediated with "A++" Grade by NAAC</div>
+            </div>
+        </div>
+        <div class="right">
+            <div>
+                <div class="rtop text-lg font-bold">Internal Smart India Hackathon 2024</div>
+                <div class="rmiddle text-sm">Organized by ACM Student Chapter</div>
+            </div>
+            <div class="rightlogo">
+                <img src="../static/images/SIH-Logo3.png" alt="sih">
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <h1>Evaluation Results</h1>
-        <table>
+        <table class="table-auto">
             <thead>
                 <tr>
                     <th>Team Number</th>
