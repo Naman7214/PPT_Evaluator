@@ -281,3 +281,19 @@ body {
 .rightlogo img {
   height: 80px !important; /* Ensure the height is applied */
 }
+
+
+.alert {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  width: fit-content;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: none; /* Hide by default */
+}
