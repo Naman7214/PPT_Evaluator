@@ -74,18 +74,53 @@
         .rightlogo img {
             height: 80px !important;
         }
-        .collapsible {
-            cursor: pointer;
-            text-decoration: underline;
-            color: blue;
-        }
-        .content {
+        .modal {
             display: none;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            /* margin: 15% auto; */
+            margin: 0.5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .evaluation-data p {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .collapsible{
+            cursor: pointer;
+        }
+        .collapsible:hover{
+            text-decoration: underline;
+        }
+        .heading{
+            font-size: xx-large;
         }
     </style>
     <script>
@@ -97,25 +132,27 @@
                 data: JSON.stringify({ team_name: teamName, team_number: teamNumber }),
                 success: function(response) {
                     let detailsHtml = `
-                        <strong>Detailed Evaluation:</strong><br>
-                        <p>Novelty (Originality): ${response.originality || 'N/A'} / 5</p>
-                        <p>Novelty (Creativity): ${response.creativity || 'N/A'} / 5</p>
-                        <p>Feasibility (Technical): ${response.technical_feasibility || 'N/A'} / 5</p>
-                        <p>Feasibility (Resources): ${response.resource_availability || 'N/A'} / 5</p>
-                        <p>Sustainability (Environmental): ${response.environmental_impact || 'N/A'} / 3</p>
-                        <p>Sustainability (Long-term viability): ${response.long_term_viability || 'N/A'} / 2</p>
-                        <p>Impact (Audience reach): ${response.target_audience_reach || 'N/A'} / 5</p>
-                        <p>Impact (Socioeconomic): ${response.social_economic_impact || 'N/A'} / 5</p>
-                        <p>Future Work (Scalability): ${response.scalability || 'N/A'} / 2</p>
-                        <p>Future Work (Roadmap): ${response.roadmap_for_growth || 'N/A'} / 2</p>
-                        <p>Clarity (Structure): ${response.structure_of_presentation || 'N/A'} / 3</p>
-                        <p>Clarity (Detailing): ${response.detailing || 'N/A'} / 3</p>
-                        <p>Clarity (Guideline compliance): ${response.compliance_with_guidelines || 'N/A'} / 3</p>
-                        <strong>Justification:</strong><br>
-                        <p>${response.justification || 'No justification provided'}</p>
+                        <div class="evaluation-data">
+                            <strong class="heading">Detailed Evaluation:</strong><br>
+                            <p><strong>Novelty (Originality):</strong> ${response.originality || 'N/A'} / 5</p>
+                            <p><strong>Novelty (Creativity):</strong> ${response.creativity || 'N/A'} / 5</p>
+                            <p><strong>Feasibility (Technical):</strong> ${response.technical_feasibility || 'N/A'} / 5</p>
+                            <p><strong>Feasibility (Resources):</strong> ${response.resource_availability || 'N/A'} / 5</p>
+                            <p><strong>Sustainability (Environmental):</strong> ${response.environmental_impact || 'N/A'} / 3</p>
+                            <p><strong>Sustainability (Long-term viability):</strong> ${response.long_term_viability || 'N/A'} / 2</p>
+                            <p><strong>Impact (Audience reach):</strong> ${response.target_audience_reach || 'N/A'} / 5</p>
+                            <p><strong>Impact (Socioeconomic):</strong> ${response.social_economic_impact || 'N/A'} / 5</p>
+                            <p><strong>Future Work (Scalability):</strong> ${response.scalability || 'N/A'} / 2</p>
+                            <p><strong>Future Work (Roadmap):</strong> ${response.roadmap_for_growth || 'N/A'} / 2</p>
+                            <p><strong>Clarity (Structure):</strong> ${response.structure_of_presentation || 'N/A'} / 3</p>
+                            <p><strong>Clarity (Detailing):</strong> ${response.detailing || 'N/A'} / 3</p>
+                            <p><strong>Clarity (Guideline compliance):</strong> ${response.compliance_with_guidelines || 'N/A'} / 3</p>
+                            <strong>Justification:</strong><br>
+                            <p>${response.justification || 'No justification provided'}</p>
+                        </div>
                     `;
-
-                    $('#details-' + teamName + '_' + teamNumber).html(detailsHtml).show();
+                    $('#modal-content').html(detailsHtml);
+                    $('#detailsModal').show();
                 },
                 error: function() {
                     alert('Error fetching detailed results.');
@@ -129,6 +166,10 @@
                 let teamNumber = $(this).data('teamNumber');
                 fetchDetails(teamName, teamNumber);
             });
+
+            $('.close').click(function() {
+                $('#detailsModal').hide();
+            });
         });
     </script>
 </head>
@@ -139,12 +180,12 @@
                 <img src="../static/images/MMCOE LOGO.png" alt="mmcoe">
             </div>
             <div>
-                <div class="ltop text-lg font-bold">Marathwada Mitra Mandal's College of Engineering</div>
+                <div class="ltop text-sm sm:text-lg font-bold">Marathwada Mitra Mandal's College of Engineering</div>
                 <div class="lmiddle text-sm">An Autonomous Institute</div>
                 <div class="lbottom text-sm">Accrediated with "A++" Grade by NAAC</div>
             </div>
         </div>
-        <div class="right">
+        <div class="right hidden sm:flex">
             <div>
                 <div class="rtop text-lg font-bold">Internal Smart India Hackathon 2024</div>
                 <div class="rmiddle text-sm">Organized by ACM Student Chapter</div>
@@ -174,12 +215,21 @@
                     <td>{{ team.problem_statement_id }}</td>
                     <td>
                         <span class="collapsible" data-team-name="{{ team.team_name }}" data-team-number="{{ team.team_number }}">{{ team.total_marks }}</span>
-                        <div id="details-{{ team.team_name }}_{{ team.team_number }}" class="content"></div>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <!-- Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-content">
+                <!-- Details will be loaded here dynamically -->
+            </div>
+        </div>
     </div>
 </body>
 </html>
