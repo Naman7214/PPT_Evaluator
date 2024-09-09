@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, url_for, session
+from flask import Flask, render_template, request, redirect, flash, url_for, session, jsonify
 import os
 from werkzeug.utils import secure_filename
 from database import get_db, query_db, insert_db, update_db, init_db, close_db
@@ -8,7 +8,7 @@ import time
 import hashlib
 from nashx import hasher
 from dotenv import load_dotenv
-
+import json
 
 
 load_dotenv()
@@ -38,75 +38,134 @@ def get_prompt(team_name, problem_statement, problem_description):
 
     Problem Statement Description: {problem_description}
 
+
     Evaluation Criteria:
-    1. **Novelty of Idea**: 
-       - Originality (5 marks)
-       - Creativity (5 marks)
+    1. *Novelty of Idea*: 
+    - Originality (5 marks)
+    - Creativity (5 marks)
 
-    2. **Feasibility**:
-       - Technical feasibility (5 marks)
-       - Resource availability (5 marks)
+    2. *Feasibility*: 
+    - Technical feasibility (5 marks)
+    - Resource availability (5 marks)
 
-    3. **Sustainability**:
-       - Environmental impact (3 marks)
-       - Long-term viability (2 marks)
+    3. *Sustainability*:
+    - Environmental impact (3 marks)
+    - Long-term viability (2 marks)
 
-    4. **Scale of Impact**:
-       - Target audience reach (5 marks)
-       - Social/Economic impact (5 marks)
+    4. *Scale of Impact*: 
+    - Target audience reach (5 marks)
+    - Social/Economic impact (5 marks)
 
-    5. **Potential for Future Work**:
-       - Scalability (2 marks)
-       - Roadmap for growth (2 marks)
-       - Integration potential (2 marks)
+    5. *Potential for Future Work*: 
+    - Scalability (2 marks)
+    - Roadmap for growth (2 marks)
+    - Integration potential (2 marks)
 
-    6. **Clarity and Presentation**:
-       - Structure of the presentation (3 marks)
-       - Detailing (3 marks)
-       - Compliance with guidelines (3 marks)
+    6. *Clarity and Presentation*:
+    - Structure of the presentation (3 marks)
+    - Detailing (3 marks)
+    - Compliance with guidelines (3 marks)
 
     Total Marks: 50
 
-    Once you have evaluated the entire presentation just give the output marks.
-    And Provide marks as per the criteria distribution ONLY.
+    #INSTRUCTIONS:
+    - Validate whether the file is a presentation.
+    - Check alignment with the problem statement and description.
+    - If the content does not align, allocate 0/50.
+    - If it's not a PPT, allocate 0/50.
+    - After evaluation, return marks according to the criteria distribution.
+    - Set difficulty to HARD.
 
-    Also keep the difficulty HARD.
-
-    #OUTPUT: 
-    Marks: [final score]/50
-
-    #Example:
-    Marks : 25/50
-    Marks : 32/50
-    Marks : 42/50
-    Marks : 48/50
-    Marks : 10/50
-    Marks : 18/50
+    #OUTPUT:
+    {{
+    "Novelty_of_Idea_Originality": int,
+    "Novelty_of_Idea_Creativity": int,
+    "Feasibility_Technical_feasibility": int,   
+    "Feasibility_Resource_availability": int,
+    "Sustainability_Environmental_impact": int,
+    "Sustainability_Long_term_viability": int,
+    "Scale_of_Impact_Target_audience_reach": int,
+    "Scale_of_Impact_Social_Economic_impact": int,
+    "Potential_for_Future_Work_Scalability": int,
+    "Potential_for_Future_Work_Roadmap_for_growth": int,
+    "Potential_for_Future_Work_Integration_potential": int,
+    "Clarity_and_Presentation_Structure_of_presentation": int,
+    "Clarity_and_Presentation_Detailing": int,
+    "Clarity_and_Presentation_Compliance_with_guidelines": int
+    "Justification" : str
+        }}
     """
 
-def evaluate_ppt_in_background(file_path, file_name, team_name, problem_statement_id, problem_description):
+def evaluate_ppt_in_background(file_path, file_name, team_name, team_number, problem_statement_id, problem_description):
     prompt = get_prompt(team_name, problem_statement_id, problem_description)
     generation_config = {
                 "temperature": 0,
                 "top_p": 0.95,
                 "top_k": 24,
                 "max_output_tokens": 8192,
-                "response_mime_type": "text/plain",
+                "response_mime_type": "application/json",
             }
     sample_file = genai.upload_file(path=file_path, display_name=file_name)
 
     model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="You are an expert PPT evaluator.", generation_config=generation_config)
     response = model.generate_content([sample_file, prompt])
-
-    marks = response.text
-    print(marks)
     genai.delete_file(sample_file.name)
     print(f'Deleted file {sample_file.uri}')
 
+    parsed_output = json.loads(response.text)
+    
+    # Calculate total marks
+    total_marks = sum([
+        parsed_output["Novelty_of_Idea_Originality"],
+        parsed_output["Novelty_of_Idea_Creativity"],
+        parsed_output["Feasibility_Technical_feasibility"],
+        parsed_output["Feasibility_Resource_availability"],
+        parsed_output["Sustainability_Environmental_impact"],
+        parsed_output["Sustainability_Long_term_viability"],
+        parsed_output["Scale_of_Impact_Target_audience_reach"],
+        parsed_output["Scale_of_Impact_Social_Economic_impact"],
+        parsed_output["Potential_for_Future_Work_Scalability"],
+        parsed_output["Potential_for_Future_Work_Roadmap_for_growth"],
+        parsed_output["Potential_for_Future_Work_Integration_potential"],
+        parsed_output["Clarity_and_Presentation_Structure_of_presentation"],
+        parsed_output["Clarity_and_Presentation_Detailing"],
+        parsed_output["Clarity_and_Presentation_Compliance_with_guidelines"]
+    ])
+
+    # Store the total marks in the team_info table
     with app.app_context():
         update_db(
-            'UPDATE team_info SET marks = ? WHERE team_name = ? AND problem_statement_id = ?',
-            (marks, team_name, problem_statement_id)
+            'UPDATE team_info SET total_marks = ? WHERE team_name = ? AND problem_statement_id = ?',
+            (total_marks, team_name, problem_statement_id)
+        )
+
+        # Store the detailed evaluation in the evaluation_details table
+        insert_db(
+            '''INSERT INTO evaluation_details (
+                team_name, team_number, problem_statement_id,
+                originality, creativity, technical_feasibility, resource_availability, 
+                environmental_impact, long_term_viability, target_audience_reach,
+                social_economic_impact, scalability, roadmap_for_growth, integration_potential, 
+                structure_of_presentation, detailing, compliance_with_guidelines, justification
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+            (
+                team_name, team_number, problem_statement_id,
+                parsed_output["Novelty_of_Idea_Originality"],
+                parsed_output["Novelty_of_Idea_Creativity"],
+                parsed_output["Feasibility_Technical_feasibility"],
+                parsed_output["Feasibility_Resource_availability"],
+                parsed_output["Sustainability_Environmental_impact"],
+                parsed_output["Sustainability_Long_term_viability"],
+                parsed_output["Scale_of_Impact_Target_audience_reach"],
+                parsed_output["Scale_of_Impact_Social_Economic_impact"],
+                parsed_output["Potential_for_Future_Work_Scalability"],
+                parsed_output["Potential_for_Future_Work_Roadmap_for_growth"],
+                parsed_output["Potential_for_Future_Work_Integration_potential"],
+                parsed_output["Clarity_and_Presentation_Structure_of_presentation"],
+                parsed_output["Clarity_and_Presentation_Detailing"],
+                parsed_output["Clarity_and_Presentation_Compliance_with_guidelines"],
+                parsed_output["Justification"]
+            )
         )
 
     
@@ -176,7 +235,7 @@ def upload_pdf():
                 )
 
             # Start evaluation in the background and show loading screen
-            Thread(target=evaluate_ppt_in_background, args=(file_path, filename, team_name, problem_statement_id, problem_description)).start()
+            Thread(target=evaluate_ppt_in_background, args=(file_path, filename, team_name, team_number,  problem_statement_id, problem_description)).start()
             return redirect(url_for('loading'))
 
         else:
@@ -193,10 +252,38 @@ def loading():
 def view_results():
     if 'username' not in session:
         return redirect(url_for('login'))
-    # Fetch all records from the database
-    results = query_db('SELECT team_number, team_name, problem_statement_id, marks FROM team_info')
 
-    return render_template('view_results.html', results=results)
+    # Fetch all team results
+    teams = query_db('SELECT team_number, team_name, problem_statement_id, total_marks FROM team_info')
+
+    return render_template('view_results.html', teams=teams)
+
+
+@app.route('/get_detailed_results', methods=['POST'])
+def get_detailed_results():
+    print("get_detailed_results route called")
+    data = request.get_json()
+    team_name = data.get('team_name')
+    team_number = data.get('team_number')
+    print(team_name)
+    print(team_number)
+    if not team_name or not team_number:
+        return jsonify({'error': 'Missing team_name or team_number'}), 400
+
+    # Fetch detailed results for the team
+    results = query_db(
+        'SELECT * FROM evaluation_details WHERE team_name = ? AND team_number = ?',
+        (team_name, team_number),
+        one=True
+    )
+    print(results)
+
+    if results is None:
+        return jsonify({'error': 'No detailed results found'}), 404
+
+    return jsonify(results)
+
+
 
 
 @app.teardown_appcontext

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Results</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,7 +15,6 @@
         }
         .container {
             max-width: 800px;
-            /* margin: 0 50 auto auto; */
             margin-top: 100px;
             background: #fff;
             padding: 20px;
@@ -54,18 +54,15 @@
             color: rgba(0, 0, 0, 0.85);
             height: 100px;
         }
-
         .left,
         .right {
             display: flex;
             align-items: center;
         }
-
         .leftlogo,
         .rightlogo {
             margin-right: 10px;
         }
-
         .ltop,
         .lmiddle,
         .lbottom,
@@ -73,12 +70,67 @@
         .rmiddle {
             text-align: left;
         }
-
         .leftlogo img,
         .rightlogo img {
             height: 80px !important;
         }
+        .collapsible {
+            cursor: pointer;
+            text-decoration: underline;
+            color: blue;
+        }
+        .content {
+            display: none;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
     </style>
+    <script>
+        function fetchDetails(teamName, teamNumber) {
+            $.ajax({
+                url: '/get_detailed_results',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ team_name: teamName, team_number: teamNumber }),
+                success: function(response) {
+                    let detailsHtml = `
+                        <strong>Detailed Evaluation:</strong><br>
+                        <p>Novelty (Originality): ${response.originality || 'N/A'} / 5</p>
+                        <p>Novelty (Creativity): ${response.creativity || 'N/A'} / 5</p>
+                        <p>Feasibility (Technical): ${response.technical_feasibility || 'N/A'} / 5</p>
+                        <p>Feasibility (Resources): ${response.resource_availability || 'N/A'} / 5</p>
+                        <p>Sustainability (Environmental): ${response.environmental_impact || 'N/A'} / 3</p>
+                        <p>Sustainability (Long-term viability): ${response.long_term_viability || 'N/A'} / 2</p>
+                        <p>Impact (Audience reach): ${response.target_audience_reach || 'N/A'} / 5</p>
+                        <p>Impact (Socioeconomic): ${response.social_economic_impact || 'N/A'} / 5</p>
+                        <p>Future Work (Scalability): ${response.scalability || 'N/A'} / 2</p>
+                        <p>Future Work (Roadmap): ${response.roadmap_for_growth || 'N/A'} / 2</p>
+                        <p>Clarity (Structure): ${response.structure_of_presentation || 'N/A'} / 3</p>
+                        <p>Clarity (Detailing): ${response.detailing || 'N/A'} / 3</p>
+                        <p>Clarity (Guideline compliance): ${response.compliance_with_guidelines || 'N/A'} / 3</p>
+                        <strong>Justification:</strong><br>
+                        <p>${response.justification || 'No justification provided'}</p>
+                    `;
+
+                    $('#details-' + teamName + '_' + teamNumber).html(detailsHtml).show();
+                },
+                error: function() {
+                    alert('Error fetching detailed results.');
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            $('.collapsible').click(function() {
+                let teamName = $(this).data('teamName');
+                let teamNumber = $(this).data('teamNumber');
+                fetchDetails(teamName, teamNumber);
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="nav">
@@ -115,12 +167,15 @@
                 </tr>
             </thead>
             <tbody>
-                {% for result in results %}
+                {% for team in teams %}
                 <tr>
-                    <td>{{ result.team_number }}</td>
-                    <td>{{ result.team_name }}</td>
-                    <td>{{ result.problem_statement_id }}</td>
-                    <td>{{ result.marks }}</td>
+                    <td>{{ team.team_number }}</td>
+                    <td>{{ team.team_name }}</td>
+                    <td>{{ team.problem_statement_id }}</td>
+                    <td>
+                        <span class="collapsible" data-team-name="{{ team.team_name }}" data-team-number="{{ team.team_number }}">{{ team.total_marks }}</span>
+                        <div id="details-{{ team.team_name }}_{{ team.team_number }}" class="content"></div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
