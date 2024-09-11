@@ -149,6 +149,8 @@
                             <p><strong>Clarity (Guideline compliance):</strong> ${response.compliance_with_guidelines || 'N/A'} / 3</p>
                             <strong>Justification:</strong><br>
                             <p>${response.justification || 'No justification provided'}</p>
+                            <strong>Suggestions:</strong><br>
+                            <p>${response.suggestions || 'No suggestions provided'}</p>
                         </div>
                     `;
                     $('#modal-content').html(detailsHtml);

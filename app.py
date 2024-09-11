@@ -75,6 +75,7 @@ def get_prompt(team_name, problem_statement, problem_description):
     - If it's not a PPT, allocate 0/50.
     - After evaluation, return marks according to the criteria distribution.
     - Set difficulty to HARD.
+    - Also provide Suggestions to improve ppt
 
     #OUTPUT:
     {{
@@ -93,6 +94,7 @@ def get_prompt(team_name, problem_statement, problem_description):
     "Clarity_and_Presentation_Detailing": int,
     "Clarity_and_Presentation_Compliance_with_guidelines": int
     "Justification" : str
+    "Suggestions" : str
         }}
     """
 
@@ -146,8 +148,8 @@ def evaluate_ppt_in_background(file_path, file_name, team_name, team_number, pro
                 originality, creativity, technical_feasibility, resource_availability, 
                 environmental_impact, long_term_viability, target_audience_reach,
                 social_economic_impact, scalability, roadmap_for_growth, integration_potential, 
-                structure_of_presentation, detailing, compliance_with_guidelines, justification
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                structure_of_presentation, detailing, compliance_with_guidelines, justification, suggestions
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
             (
                 team_name, team_number, problem_statement_id,
                 parsed_output["Novelty_of_Idea_Originality"],
@@ -164,7 +166,8 @@ def evaluate_ppt_in_background(file_path, file_name, team_name, team_number, pro
                 parsed_output["Clarity_and_Presentation_Structure_of_presentation"],
                 parsed_output["Clarity_and_Presentation_Detailing"],
                 parsed_output["Clarity_and_Presentation_Compliance_with_guidelines"],
-                parsed_output["Justification"]
+                parsed_output["Justification"],
+                parsed_output["Suggestions"]
             )
         )
 
@@ -184,15 +187,18 @@ def login():
         password = request.form['password']
         match = False
         user = query_db('SELECT * FROM users WHERE username = ?', (username,), one=True)
-        user_hash = hasher(user['password'],16)
-        actual_hash = hasher(password,16)
-        if user_hash == actual_hash:
-            match = True
-        if user and match:
-            session['username'] = username
-            return redirect(url_for('landing_page'))
+        if user is None:
+            flash('Invalid username or password')
         else:
-            flash('Invalid username or password.')
+            user_hash = hasher(user['password'],16)
+            actual_hash = hasher(password,16)
+            if user_hash == actual_hash:
+                match = True
+            if user and match:
+                session['username'] = username
+                return redirect(url_for('landing_page'))
+            else:
+                flash('Invalid username or password.')
     
     return render_template('login.html')
 
