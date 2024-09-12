@@ -101,12 +101,12 @@ def get_prompt(team_name, problem_statement, problem_description):
 def evaluate_ppt_in_background(file_path, file_name, team_name, team_number, problem_statement_id, problem_description):
     prompt = get_prompt(team_name, problem_statement_id, problem_description)
     generation_config = {
-                "temperature": 0,
-                "top_p": 0.95,
-                "top_k": 24,
-                "max_output_tokens": 8192,
-                "response_mime_type": "application/json",
-            }
+        "temperature": 0,
+        "top_p": 0.95,
+        "top_k": 24,
+        "max_output_tokens": 8192,
+        "response_mime_type": "application/json",
+    }
     sample_file = genai.upload_file(path=file_path, display_name=file_name)
 
     model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="You are an expert PPT evaluator.", generation_config=generation_config)
@@ -115,7 +115,7 @@ def evaluate_ppt_in_background(file_path, file_name, team_name, team_number, pro
     print(f'Deleted file {sample_file.uri}')
 
     parsed_output = json.loads(response.text)
-    
+
     # Calculate total marks
     total_marks = sum([
         parsed_output["Novelty_of_Idea_Originality"],
@@ -141,35 +141,72 @@ def evaluate_ppt_in_background(file_path, file_name, team_name, team_number, pro
             (total_marks, team_name, problem_statement_id)
         )
 
-        # Store the detailed evaluation in the evaluation_details table
-        insert_db(
-            '''INSERT INTO evaluation_details (
-                team_name, team_number, problem_statement_id,
-                originality, creativity, technical_feasibility, resource_availability, 
-                environmental_impact, long_term_viability, target_audience_reach,
-                social_economic_impact, scalability, roadmap_for_growth, integration_potential, 
-                structure_of_presentation, detailing, compliance_with_guidelines, justification, suggestions
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-            (
-                team_name, team_number, problem_statement_id,
-                parsed_output["Novelty_of_Idea_Originality"],
-                parsed_output["Novelty_of_Idea_Creativity"],
-                parsed_output["Feasibility_Technical_feasibility"],
-                parsed_output["Feasibility_Resource_availability"],
-                parsed_output["Sustainability_Environmental_impact"],
-                parsed_output["Sustainability_Long_term_viability"],
-                parsed_output["Scale_of_Impact_Target_audience_reach"],
-                parsed_output["Scale_of_Impact_Social_Economic_impact"],
-                parsed_output["Potential_for_Future_Work_Scalability"],
-                parsed_output["Potential_for_Future_Work_Roadmap_for_growth"],
-                parsed_output["Potential_for_Future_Work_Integration_potential"],
-                parsed_output["Clarity_and_Presentation_Structure_of_presentation"],
-                parsed_output["Clarity_and_Presentation_Detailing"],
-                parsed_output["Clarity_and_Presentation_Compliance_with_guidelines"],
-                parsed_output["Justification"],
-                parsed_output["Suggestions"]
-            )
+        # Check if record exists in evaluation_details
+        existing_record = query_db(
+            'SELECT * FROM evaluation_details WHERE team_name = ? AND team_number = ? AND problem_statement_id = ?',
+            (team_name, team_number, problem_statement_id),
+            one=True
         )
+
+        if existing_record:
+            # Update the existing record
+            update_db(
+                '''UPDATE evaluation_details SET 
+                    originality = ?, creativity = ?, technical_feasibility = ?, resource_availability = ?, 
+                    environmental_impact = ?, long_term_viability = ?, target_audience_reach = ?, 
+                    social_economic_impact = ?, scalability = ?, roadmap_for_growth = ?, integration_potential = ?, 
+                    structure_of_presentation = ?, detailing = ?, compliance_with_guidelines = ?, justification = ?, suggestions = ?
+                    WHERE team_name = ? AND team_number = ? AND problem_statement_id = ?''',
+                (
+                    parsed_output["Novelty_of_Idea_Originality"],
+                    parsed_output["Novelty_of_Idea_Creativity"],
+                    parsed_output["Feasibility_Technical_feasibility"],
+                    parsed_output["Feasibility_Resource_availability"],
+                    parsed_output["Sustainability_Environmental_impact"],
+                    parsed_output["Sustainability_Long_term_viability"],
+                    parsed_output["Scale_of_Impact_Target_audience_reach"],
+                    parsed_output["Scale_of_Impact_Social_Economic_impact"],
+                    parsed_output["Potential_for_Future_Work_Scalability"],
+                    parsed_output["Potential_for_Future_Work_Roadmap_for_growth"],
+                    parsed_output["Potential_for_Future_Work_Integration_potential"],
+                    parsed_output["Clarity_and_Presentation_Structure_of_presentation"],
+                    parsed_output["Clarity_and_Presentation_Detailing"],
+                    parsed_output["Clarity_and_Presentation_Compliance_with_guidelines"],
+                    parsed_output["Justification"],
+                    parsed_output["Suggestions"],
+                    team_name, team_number, problem_statement_id
+                )
+            )
+        else:
+            # Insert a new record
+            insert_db(
+                '''INSERT INTO evaluation_details (
+                    team_name, team_number, problem_statement_id,
+                    originality, creativity, technical_feasibility, resource_availability, 
+                    environmental_impact, long_term_viability, target_audience_reach,
+                    social_economic_impact, scalability, roadmap_for_growth, integration_potential, 
+                    structure_of_presentation, detailing, compliance_with_guidelines, justification, suggestions
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                (
+                    team_name, team_number, problem_statement_id,
+                    parsed_output["Novelty_of_Idea_Originality"],
+                    parsed_output["Novelty_of_Idea_Creativity"],
+                    parsed_output["Feasibility_Technical_feasibility"],
+                    parsed_output["Feasibility_Resource_availability"],
+                    parsed_output["Sustainability_Environmental_impact"],
+                    parsed_output["Sustainability_Long_term_viability"],
+                    parsed_output["Scale_of_Impact_Target_audience_reach"],
+                    parsed_output["Scale_of_Impact_Social_Economic_impact"],
+                    parsed_output["Potential_for_Future_Work_Scalability"],
+                    parsed_output["Potential_for_Future_Work_Roadmap_for_growth"],
+                    parsed_output["Potential_for_Future_Work_Integration_potential"],
+                    parsed_output["Clarity_and_Presentation_Structure_of_presentation"],
+                    parsed_output["Clarity_and_Presentation_Detailing"],
+                    parsed_output["Clarity_and_Presentation_Compliance_with_guidelines"],
+                    parsed_output["Justification"],
+                    parsed_output["Suggestions"]
+                )
+            )
 
     
 
