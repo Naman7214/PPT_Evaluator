@@ -252,9 +252,6 @@ body {
   margin-right: 10px; /* Add some space between logo and text */
 }
 
-.leftlogo img, .rightlogo img {
-  height: 40px; /* Set a specific height for logos */
-}
 
 .left .leftlogo {
   margin-right: 10px; /* Add space between logo and text */
@@ -279,7 +276,7 @@ body {
 
 .leftlogo img,
 .rightlogo img {
-  height: 80px !important; /* Ensure the height is applied */
+  height: 80px; /* Ensure the height is applied */
 }
 
 
@@ -296,4 +293,49 @@ body {
   right: 20px;
   z-index: 1000;
   display: none; /* Hide by default */
+}
+
+@media (max-width: 980px){
+  .right{
+    display: none;
+  }
+  .left{
+    display: flex;
+    width: 100%;
+  }
+  .nav{
+    height: 10%;
+    font-size: 2rem;
+  }
+  .leftlogo img{
+    height: 100px ;
+  }
+  .modal {
+    height: 12%;
+    
+  }
+  .modal-button{
+    font-size: 3rem;
+    padding: 20px;
+  }
+  .scroll-down{
+    font-size: 3rem;
+  }
+  .modal-right{
+    display: none;
+  }
+  .modal-left{
+    font-size: 3rem;
+  }
+  .input-label{
+    display: none;
+  }
+  .input-block input{
+    padding: 25px 0 0;
+    font-size: 38px;
+  }
+  .input-button {
+    padding: 16px 45px;
+    border-radius: 47px;
+  }
 }

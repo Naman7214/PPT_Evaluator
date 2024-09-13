@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,33 +14,40 @@
             padding: 20px;
             background-color: #f4f4f4;
         }
+
         .container {
             max-width: 800px;
-            margin-top: 100px;
+            margin: 100px auto;
             background: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         h1 {
             text-align: center;
             color: #333;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
             border-radius: 3px;
         }
-        th, td {
+
+        th,
+        td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         th {
             background-color: #007bff;
             color: white;
         }
+
         .nav {
             position: fixed;
             top: 0;
@@ -54,15 +62,18 @@
             color: rgba(0, 0, 0, 0.85);
             height: 100px;
         }
+
         .left,
         .right {
             display: flex;
             align-items: center;
         }
+
         .leftlogo,
         .rightlogo {
             margin-right: 10px;
         }
+
         .ltop,
         .lmiddle,
         .lbottom,
@@ -70,10 +81,12 @@
         .rmiddle {
             text-align: left;
         }
+
         .leftlogo img,
         .rightlogo img {
             height: 80px !important;
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -85,6 +98,7 @@
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.7);
         }
+
         .modal-content {
             background-color: #fefefe;
             /* margin: 15% auto; */
@@ -94,33 +108,53 @@
             width: 80%;
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            
+
         }
+
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
+
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
+
         .evaluation-data p {
             margin: 5px 0;
             padding: 5px;
             border-bottom: 1px solid #ddd;
         }
-        .collapsible{
+
+        .collapsible {
             cursor: pointer;
         }
-        .collapsible:hover{
+
+        .collapsible:hover {
             text-decoration: underline;
         }
-        .heading{
+
+        .heading {
             font-size: xx-large;
+        }
+
+        @media (max-width: 430px) {
+            table {
+                width: 100%;
+                font-size: 12px;
+                /* Adjust font size for smaller screens */
+            }
+
+            th,
+            td {
+                padding: 8px;
+                /* Adjust padding for better spacing */
+            }
         }
     </style>
     <script>
@@ -130,7 +164,7 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ team_name: teamName, team_number: teamNumber }),
-                success: function(response) {
+                success: function (response) {
                     let detailsHtml = `
                         <div class="evaluation-data">
                             <strong class="heading">Detailed Evaluation:</strong><br>
@@ -157,25 +191,28 @@
                     $('#modal-content').html(detailsHtml);
                     $('#detailsModal').show();
                 },
-                error: function() {
+                error: function () {
                     alert('Error fetching detailed results.');
                 }
             });
         }
 
-        $(document).ready(function() {
-            $('.collapsible').click(function() {
+        $(document).ready(function () {
+            $('.collapsible').click(function () {
                 let teamName = $(this).data('teamName');
                 let teamNumber = $(this).data('teamNumber');
                 fetchDetails(teamName, teamNumber);
             });
 
-            $('.close').click(function() {
+            $('.close').click(function () {
                 $('#detailsModal').hide();
             });
         });
+
+        
     </script>
 </head>
+
 <body>
     <div class="nav">
         <div class="left">
@@ -199,15 +236,15 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container overflow-x-auto">
         <h1>Evaluation Results</h1>
-        <table class="table-auto">
+        <table class="table-auto min-w-full">
             <thead>
                 <tr>
-                    <th>Team Number</th>
-                    <th>Team Name</th>
-                    <th>Problem Statement ID</th>
-                    <th>Marks</th>
+                    <th class="team-number">Team Number</th>
+                    <th class="team-name">Team Name</th>
+                    <th class="problem-statement-id">Problem Statement ID</th>
+                    <th class="marks">Marks</th>
                 </tr>
             </thead>
             <tbody>
@@ -217,7 +254,8 @@
                     <td>{{ team.team_name }}</td>
                     <td>{{ team.problem_statement_id }}</td>
                     <td>
-                        <span class="collapsible" data-team-name="{{ team.team_name }}" data-team-number="{{ team.team_number }}">{{ team.total_marks }}</span>
+                        <span class="collapsible" data-team-name="{{ team.team_name }}"
+                            data-team-number="{{ team.team_number }}">{{ team.total_marks }}</span>
                     </td>
                 </tr>
                 {% endfor %}
@@ -225,7 +263,6 @@
         </table>
     </div>
 
-    <!-- Modal -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -234,5 +271,29 @@
             </div>
         </div>
     </div>
+    <script>
+        function updateTableHeaders() {
+            const width = window.innerWidth;
+
+            const teamNumberHeader = document.querySelector('.team-number');
+            const problemStatementIdHeader = document.querySelector('.problem-statement-id');
+
+            if (width <= 430) {
+                teamNumberHeader.textContent = 'Team No';
+                problemStatementIdHeader.textContent = 'PS ID';
+            } else {
+                teamNumberHeader.textContent = 'Team Number';
+                problemStatementIdHeader.textContent = 'Problem Statement ID';
+            }
+        }
+
+        // Initial call to set the correct header text on page load
+        updateTableHeaders();
+
+        // Add an event listener to handle window resize
+        window.addEventListener('resize', updateTableHeaders);
+
+    </script>
 </body>
+
 </html>
